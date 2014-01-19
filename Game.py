@@ -62,8 +62,10 @@ class Game:
         pass
 
     def farm(self, p):
+        worked = False
         if(self.currentPlayer.hasDude(p)):
             worked = buildFarm(p)
+
         if(worked):
             return p
         else:

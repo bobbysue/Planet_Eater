@@ -11,7 +11,7 @@ class Player:
         self.farms = [ ]
         self.gates = [ ]
         self.cols = [ ]
-        self.sec = [ ]
+        self.sols = [ ]
         
         #Things mapping
 
@@ -29,10 +29,10 @@ class Player:
         self.costMap["Farm"] = ("Ore", 4)
         
     def hasDude(self, p):
-        for c in cols:
+        for c in self.cols:
             if(c.equals(p)):
                 return True
-        for s in sols:
+        for s in self.sols:
             if(s.equals(p)):
                 return True
         return False
