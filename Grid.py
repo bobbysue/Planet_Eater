@@ -16,10 +16,10 @@ class Grid:
         return self.grid[row][col].getType()
         
     def getRows(self):
-        return len(grid)
+        return len(self.grid)
         
     def getCols(self):
-        return len(grid[])
+        return len(self.grid[0])
 
 
 

@@ -2,6 +2,7 @@
 
 import os, pygame, math, operator
 from pygame.locals import *
+from Game import Game
 
 # This is the rectangular size of the hexagon tiles.
 TILE_WIDTH = 52
@@ -19,6 +20,10 @@ def distance(coord1, coord2):
 
 class Display:
     
+
+    cursorArea = "none"
+    selectedHex = (-1, -1)
+
     def hexMapToPixel(self, mapX, mapY, loc = 'corner'):
         """
         Returns the top left pixel location of a hexagon map location.
@@ -76,23 +81,21 @@ class Display:
         """
         fnt = pygame.font.Font(pygame.font.get_default_font(), 12)
 
-        self.mapimg = pygame.Surface((1040, 1040), 1)
+        self.mapimg = pygame.Surface((self.mapWidth, self.mapHeight), 1)
         self.mapimg = self.mapimg.convert()
         self.mapimg.fill((104, 104, 104))
 
-        for x in range(9):
-            for y in range(9):
+        for x in range(self.game.grid.getCols()):
+            for y in range(self.game.grid.getRows()):
                 # Get the top left location of the tile.
                 pixelX, pixelY = self.hexMapToPixel(x, y)
 
                 # Blit the tile to the map image.
-                self.mapimg.blit(self.tiles['dark'], (pixelX, pixelY))
-                                                 
-                location = fnt.render("Hi", 0, (0x00, 0xff, 0xff))
-                lrect = location.get_rect()
-                lrect.center = (pixelX + (TILE_WIDTH/2), pixelY + 
-                                (TILE_HEIGHT/2))
-                self.mapimg.blit(location, lrect.topleft)
+                self.mapimg.blit(self.tiles["dark"], (pixelX, pixelY))
+                
+                # Mark bases
+                if self.game.grid.getType(x, y) == "Base":
+                    self.mapimg.blit(self.tiles["base0"], (pixelX, pixelY))
         
     def loadTiles(self):
         """
@@ -101,20 +104,32 @@ class Display:
         
         self.tiles = {}
 
-        self.tiles['dark'] = pygame.image.load( 
+        self.tiles["base0"] = pygame.image.load(
+                                    "./images/medRed.png").convert()
+        self.tiles["base0"].set_colorkey((0x80, 0x00, 0x80), RLEACCEL)
+
+        self.tiles["dark"] = pygame.image.load( 
                                      "./images/medTile.png").convert()
-        self.tiles['dark'].set_colorkey((0x80, 0x00, 0x80), RLEACCEL)
+        self.tiles["dark"].set_colorkey((0x80, 0x00, 0x80), RLEACCEL)
         
-        self.tiles['cursor'] = pygame.image.load(
+        self.tiles["cursor"] = pygame.image.load(
                                    "./images/medCursor.png").convert()
-        self.tiles['cursor'].set_colorkey((0x80, 0x00, 0x80), RLEACCEL)
+        self.tiles["cursor"].set_colorkey((0x80, 0x00, 0x80), RLEACCEL)
         
-        self.cursorPos = self.tiles['cursor'].get_rect()
+        self.cursorPos = self.tiles["cursor"].get_rect()
 
     def init(self):
         """
         Set up the screen
         """
+
+        self.game = Game()
+        
+        self.mapWidth = TILE_WIDTH * self.game.grid.getCols() +\
+                        ODD_ROW_X_MOD
+        self.mapHeight = ROW_HEIGHT * (self.game.grid.getCols()-1) +\
+                         TILE_HEIGHT
+
         self.screen = pygame.display.set_mode((1040, 1040), 1)
 
         self.loadTiles()
@@ -126,8 +141,22 @@ class Display:
         """
 
         mapX, mapY = self.pixelToHexMap(x, y)
-        pixelX, pixelY = self.hexMapToPixel(mapX, mapY)
-        self.cursorPos.topleft = (pixelX, pixelY)
+        if mapX in range(self.game.grid.getCols()) and \
+                mapY in range(self.game.grid.getRows()):
+            pixelX, pixelY = self.hexMapToPixel(mapX, mapY)
+            self.cursorPos.topleft = (pixelX, pixelY)
+            self.selectedHex = (mapX, mapY)
+            self.cursorArea = "map"
+        else:
+            self.cursorArea = "none"
+            self.selectedHex = (-1, -1)
+
+    def drawScreen(self):
+        self.screen.blit(self.mapimg, (0, 0))
+        if self.cursorArea == "map":
+            self.screen.blit(self.tiles["cursor"], self.cursorPos)
+
+        pygame.display.flip()
 
     def mainLoop(self):
         pygame.init()
@@ -143,11 +172,10 @@ class Display:
                     return
                 elif event.type == MOUSEMOTION:
                     self.setCursor(event.pos[0], event.pos[1])
-            
-            self.screen.blit(self.mapimg, (0, 0))
-            self.screen.blit(self.tiles['cursor'], self.cursorPos)
 
-            pygame.display.flip()
+            self.drawScreen()
+            
+
 
 def main():
     g = Display()
