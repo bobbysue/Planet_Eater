@@ -14,6 +14,12 @@ class Grid:
 
     def getType(self, row, col):
         return self.grid[row][col].getType()
+        
+    def getRows(self):
+        return len(grid)
+        
+    def getCols(self):
+        return len(grid[])
 
 
 
