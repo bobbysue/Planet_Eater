@@ -6,7 +6,7 @@ class Game:
         self.p1 = Player()
         self.p2 = Player()
 
-        self.grid = Grid(10, 10)
+        self.grid = Grid(10, 10, (self.p1, self.p2))
 
         self.currentPlayer = self.p1
 
@@ -59,12 +59,13 @@ class Game:
         pass
 
     def importCol(self):
-        pass
+        worked = False
+        return self.currentPlayer.importCol()
 
     def farm(self, p):
         worked = False
         if(self.currentPlayer.hasDude(p)):
-            worked = buildFarm(p)
+            worked = self.currentPlayer.buildFarm(p)
 
         if(worked):
             return p
@@ -75,3 +76,4 @@ class Game:
 
 g = Game()
 print g.farm(Point(1,1))
+print g.importCol()
