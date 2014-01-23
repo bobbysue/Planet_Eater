@@ -22,7 +22,7 @@ class Display:
     
 
     cursorArea = "none"
-    selectedHex = (-1, -1)
+    cursorHex = (-1, -1)
 
     def hexMapToPixel(self, mapX, mapY, loc = 'corner'):
         """
@@ -145,11 +145,11 @@ class Display:
                 mapY in range(self.game.grid.getRows()):
             pixelX, pixelY = self.hexMapToPixel(mapX, mapY)
             self.cursorPos.topleft = (pixelX, pixelY)
-            self.selectedHex = (mapX, mapY)
+            self.cursorHex = (mapX, mapY)
             self.cursorArea = "map"
         else:
             self.cursorArea = "none"
-            self.selectedHex = (-1, -1)
+            self.cursorHex = (-1, -1)
 
     def drawScreen(self):
         self.screen.blit(self.mapimg, (0, 0))
