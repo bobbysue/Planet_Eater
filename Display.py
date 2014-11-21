@@ -36,7 +36,8 @@ class Display:
     
 
     cursorArea = "none"
-    selectedHex = (-1, -1)
+
+    cursorHex = (-1, -1)
     mouseDownHex = (-1, -1)
 
     def hexMapToPixel(self, mapX, mapY, loc = 'corner'):
@@ -162,11 +163,11 @@ class Display:
                 mapY in range(self.game.grid.getRows()):
             pixelX, pixelY = self.hexMapToPixel(mapX, mapY)
             self.cursorPos.topleft = (pixelX, pixelY)
-            self.selectedHex = (mapX, mapY)
+            self.cursorHex = (mapX, mapY)
             self.cursorArea = "map"
         else:
             self.cursorArea = "none"
-            self.selectedHex = (-1, -1)
+            self.cursorHex = (-1, -1)
 
     def drawScreen(self):
         self.screen.blit(self.mapimg, (0, 0))
@@ -190,9 +191,9 @@ class Display:
                 elif event.type == MOUSEMOTION:
                     self.setCursor(event.pos[0], event.pos[1])
                 elif event.type == MOUSEBUTTONDOWN:
-                    self.mouseDownHex = self.selectedHex
-                elif event.type == MOUSEBUTTONUP and self.mouseDownHex == self.selectedHex:
-                    self.game.grid.setType(self.selectedHex[0], self.selectedHex[1], "Base")
+                    self.mouseDownHex = self.cursorHex
+                elif event.type == MOUSEBUTTONUP and self.mouseDownHex == self.cursorHex:
+                    self.game.grid.setType(self.cursorHex[0], self.cursorHex[1], "Base")
                     self.drawMap()
                     
                     
