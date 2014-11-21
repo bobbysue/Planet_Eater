@@ -14,6 +14,9 @@ class Grid:
 
     def getType(self, row, col):
         return self.grid[row][col].getType()
+
+    def setType(self, row, col, hexType):
+        self.grid[row][col].setType(hexType)
         
     def getRows(self):
         return len(self.grid)
@@ -25,12 +28,12 @@ class Grid:
 
 class Hex:
     def __init__(self):
-        self.type = (int) (random.random() * 5)
+        self.hexType = (int) (random.random() * 5)
         self.explored = False
     def getType(self):
-        return self.type
-    def setType(self, type):
-        self.type = type
+        return self.hexType
+    def setType(self, hexType):
+        self.hexType = hexType
 
 class Point:
     def __init__(self, x, y):

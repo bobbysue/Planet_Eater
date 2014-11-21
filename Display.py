@@ -4,15 +4,29 @@ import os, pygame, math, operator
 from pygame.locals import *
 from Game import Game
 
-# This is the rectangular size of the hexagon tiles.
-TILE_WIDTH = 52
-TILE_HEIGHT = 60
+# map_size = "small"
+map_size = "medium"
+# map_size = "big"
 
-# This is the distance in height between two rows.
-ROW_HEIGHT = 46
+if map_size == "medium":
+  # This is the rectangular size of the hexagon tiles.
+  TILE_WIDTH = 52
+  TILE_HEIGHT = 60
+  # This is the distance in height between two rows.
+  ROW_HEIGHT = 46
+  
+elif map_size == "big":
+  TILE_WIDTH = 90
+  TILE_HEIGHT = 104
+  ROW_HEIGHT = 79
+elif map_size == "small":
+  TILE_WIDTH = 38
+  TILE_HEIGHT = 41
+  ROW_HEIGHT = 31
 
 # This value will be applied to all odd rows x value.
-ODD_ROW_X_MOD = 26
+ODD_ROW_X_MOD = TILE_WIDTH /2
+
 
 def distance(coord1, coord2):
     return math.sqrt( (coord1[0] - coord2[0]) ** 2 + 
@@ -23,6 +37,7 @@ class Display:
 
     cursorArea = "none"
     selectedHex = (-1, -1)
+    mouseDownHex = (-1, -1)
 
     def hexMapToPixel(self, mapX, mapY, loc = 'corner'):
         """
@@ -102,18 +117,20 @@ class Display:
         Load the tile types
         """
         
+        map_image_folder = "./images/map/" + map_size + "/"
+        
         self.tiles = {}
 
         self.tiles["base0"] = pygame.image.load(
-                                    "./images/medRed.png").convert()
+                                    map_image_folder + "red.png").convert()
         self.tiles["base0"].set_colorkey((0x80, 0x00, 0x80), RLEACCEL)
 
         self.tiles["dark"] = pygame.image.load( 
-                                     "./images/medTile.png").convert()
+                                     map_image_folder + "tile.png").convert()
         self.tiles["dark"].set_colorkey((0x80, 0x00, 0x80), RLEACCEL)
         
         self.tiles["cursor"] = pygame.image.load(
-                                   "./images/medCursor.png").convert()
+                                   map_image_folder + "cursor.png").convert()
         self.tiles["cursor"].set_colorkey((0x80, 0x00, 0x80), RLEACCEL)
         
         self.cursorPos = self.tiles["cursor"].get_rect()
@@ -172,6 +189,13 @@ class Display:
                     return
                 elif event.type == MOUSEMOTION:
                     self.setCursor(event.pos[0], event.pos[1])
+                elif event.type == MOUSEBUTTONDOWN:
+                    self.mouseDownHex = self.selectedHex
+                elif event.type == MOUSEBUTTONUP and self.mouseDownHex == self.selectedHex:
+                    self.game.grid.setType(self.selectedHex[0], self.selectedHex[1], "Base")
+                    self.drawMap()
+                    
+                    
 
             self.drawScreen()
             
