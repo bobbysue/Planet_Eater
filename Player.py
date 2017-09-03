@@ -13,12 +13,12 @@ class Player:
         self.gates = [ ]
         self.cols = [ Point(1, 1)]
         self.sols = [ ]
-        
+
         #Things mapping
 
         things = [ 0, 1, 2, 3, 4]
         shuffle(things)
-        
+
         self.mapping = { }
         self.mapping["Ore"] = things[0]
         self.mapping["Fuel"] = things[1]
@@ -45,11 +45,9 @@ class Player:
             self.resources[p[0]] -= p[1]
         return bool
 
-        
-
     def setBaseSquare(self, p):
         self.base = p
-        
+
     def importCol(self):
         if(self.base in self.cols):
             return False

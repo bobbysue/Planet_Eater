@@ -12,10 +12,10 @@ class Game:
 
     def getCols(self, player):
         pass
-    
+
     def getSols(self, player):
         pass
-    
+
     def getHexs(self):
         pass
 
@@ -71,8 +71,6 @@ class Game:
             return p
         else:
             return []
-            
-    
 
 g = Game()
 print g.farm(Point(1,1))

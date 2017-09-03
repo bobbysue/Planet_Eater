@@ -14,7 +14,7 @@ if map_size == "medium":
   TILE_HEIGHT = 60
   # This is the distance in height between two rows.
   ROW_HEIGHT = 46
-  
+
 elif map_size == "big":
   TILE_WIDTH = 90
   TILE_HEIGHT = 104
@@ -29,12 +29,11 @@ ODD_ROW_X_MOD = TILE_WIDTH /2
 
 
 def distance(coord1, coord2):
-    return math.sqrt( (coord1[0] - coord2[0]) ** 2 + 
+    return math.sqrt( (coord1[0] - coord2[0]) ** 2 +
                       (coord1[1] - coord2[1]) ** 2)
 
-class Display:
-    
 
+class Display:
     cursorArea = "none"
 
     cursorHex = (-1, -1)
@@ -61,7 +60,7 @@ class Display:
         """
         Returns hex map location of a pixel
         """
-        
+
         mapYGuess = (pixelY - TILE_HEIGHT/2) / ROW_HEIGHT
         if mapYGuess & 1:
             mapXGuess = (pixelX - ODD_ROW_X_MOD - TILE_WIDTH/2) / \
@@ -74,21 +73,20 @@ class Display:
         canCent.append(self.hexMapToPixel(mapXGuess, mapYGuess, 'center'))
         canCent.append(self.hexMapToPixel(mapXGuess+1, mapYGuess, 'center'))
         if mapYGuess & 1:
-            canCent.append(self.hexMapToPixel(mapXGuess+1, mapYGuess+1, 
+            canCent.append(self.hexMapToPixel(mapXGuess+1, mapYGuess+1,
                                               'center'))
         else:
-            canCent.append(self.hexMapToPixel(mapXGuess, mapYGuess+1, 
+            canCent.append(self.hexMapToPixel(mapXGuess, mapYGuess+1,
                                               'center'))
-            
 
         canDist = [];
 
         for i in range(3):
             canDist.append(distance(canCent[i], (pixelX, pixelY)))
-        
+
         minInd = canDist.index(min(canDist))
 
-        return (mapXGuess + minInd % 2 + (minInd / 2) * (mapYGuess & 1), 
+        return (mapXGuess + minInd % 2 + (minInd / 2) * (mapYGuess & 1),
                mapYGuess + minInd / 2)
 
     def drawMap(self):
@@ -108,32 +106,32 @@ class Display:
 
                 # Blit the tile to the map image.
                 self.mapimg.blit(self.tiles["dark"], (pixelX, pixelY))
-                
+
                 # Mark bases
                 if self.game.grid.getType(x, y) == "Base":
                     self.mapimg.blit(self.tiles["base0"], (pixelX, pixelY))
-        
+
     def loadTiles(self):
         """
         Load the tile types
         """
-        
+
         map_image_folder = "./images/map/" + map_size + "/"
-        
+
         self.tiles = {}
 
         self.tiles["base0"] = pygame.image.load(
                                     map_image_folder + "red.png").convert()
         self.tiles["base0"].set_colorkey((0x80, 0x00, 0x80), RLEACCEL)
 
-        self.tiles["dark"] = pygame.image.load( 
+        self.tiles["dark"] = pygame.image.load(
                                      map_image_folder + "tile.png").convert()
         self.tiles["dark"].set_colorkey((0x80, 0x00, 0x80), RLEACCEL)
-        
+
         self.tiles["cursor"] = pygame.image.load(
                                    map_image_folder + "cursor.png").convert()
         self.tiles["cursor"].set_colorkey((0x80, 0x00, 0x80), RLEACCEL)
-        
+
         self.cursorPos = self.tiles["cursor"].get_rect()
 
     def init(self):
@@ -142,7 +140,7 @@ class Display:
         """
 
         self.game = Game()
-        
+
         self.mapWidth = TILE_WIDTH * self.game.grid.getCols() +\
                         ODD_ROW_X_MOD
         self.mapHeight = ROW_HEIGHT * (self.game.grid.getCols()-1) +\
@@ -152,7 +150,7 @@ class Display:
 
         self.loadTiles()
         self.drawMap()
-    
+
     def setCursor(self, x, y):
         """
         Set the hexagon map cursor
@@ -195,11 +193,8 @@ class Display:
                 elif event.type == MOUSEBUTTONUP and self.mouseDownHex == self.cursorHex:
                     self.game.grid.setType(self.cursorHex[0], self.cursorHex[1], "Base")
                     self.drawMap()
-                    
-                    
 
             self.drawScreen()
-            
 
 
 def main():

@@ -17,13 +17,12 @@ class Grid:
 
     def setType(self, row, col, hexType):
         self.grid[row][col].setType(hexType)
-        
+
     def getRows(self):
         return len(self.grid)
-        
+
     def getCols(self):
         return len(self.grid[0])
-
 
 
 class Hex:
@@ -34,6 +33,7 @@ class Hex:
         return self.hexType
     def setType(self, hexType):
         self.hexType = hexType
+
 
 class Point:
     def __init__(self, x, y):
